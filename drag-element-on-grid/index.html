@@ -20,6 +20,7 @@
         width: var(--grid-size);
         height: var(--grid-size);
         outline: solid 2px #333;
+        background-color: lightcyan;
 
         display: grid;
         grid-template-columns: repeat(10, 1fr);
@@ -27,18 +28,10 @@
 
         position: relative;
       }
-      .grid-background {
-        background-color: black;
-        width: 100%;
-        position: absolute;
-        top: 0;
-        height: 100%;
-        z-index: -1;
-      }
       .square {
         width: var(--square-size);
         height: var(--square-size);
-        background-color: aqua;
+        border: solid 2px #333;
       }
       #elem {
         width: var(--square-size);
@@ -58,6 +51,8 @@
       <div id="elem"></div>
     </div>
 
+    <div id="rect"></div>
+
     <script>
       const elem = document.querySelector('#elem');
       const grid = document.querySelector('#grid');
@@ -75,21 +70,14 @@
         grid.appendChild(square);
       }
 
-      // add background to grid
-      const background = document.createElement('div');
-      background.className = 'grid-background';
-      grid.appendChild(background);
-
-      // set onGrid to true when cursor is over grid
-      grid.addEventListener('mouseover', function () {
+      // set onGrid to true when cursor enter grid
+      grid.addEventListener('mouseenter', function () {
         onGrid = true;
-        console.log(onGrid);
       });
 
-      // set onGrid on false when cursor leave grid
-      grid.addEventListener('mouseout', function () {
+      // set onGrid to true when cursor leave grid
+      grid.addEventListener('mouseleave', function () {
         onGrid = false;
-        console.log(onGrid);
       });
 
       function getMouseCoords(e) {
@@ -113,6 +101,50 @@
 
         gridCoords.x = x;
         gridCoords.y = y;
+      }
+
+      // when user click on element
+      elem.addEventListener('mousedown', function (e) {
+        console.log('called');
+        // if mouse is not on the grid
+        if (onGrid === false) {
+          console.log('yes');
+          // set initial mouse coords
+          mouseCoords.startX = e.clientX;
+          mouseCoords.startY = e.clientY;
+
+          document.addEventListener('mousemove', getMouseCoords);
+          document.addEventListener('mousemove', moveElem);
+        } else {
+          document.addEventListener('mousemove', getGridCoords);
+          document.addEventListener('mousemove', moveElemOnGrid);
+        }
+      });
+
+      // when user stop clicking
+      document.addEventListener('mouseup', function () {
+        document.removeEventListener('mousemove', getMouseCoords);
+        document.removeEventListener('mousemove', getGridCoords);
+        document.removeEventListener('mousemove', moveElem);
+        document.removeEventListener('mousemove', moveElemOnGrid);
+      });
+
+      // move the element on the grid
+      function moveElemOnGrid() {
+        elem.style.top = gridCoords.y * (gridRect.height / 10) + 'px';
+        elem.style.left = gridCoords.x * (gridRect.width / 10) + 'px';
+      }
+
+      // move the element outside of the grid
+      function moveElem(e) {
+        console.log('called');
+        // calculate new pointer position
+        currentPosX = initialPosX - e.clientX;
+        currentPosY = initialPosY - e.clientY;
+
+        // set new element position
+        elem.style.top = elem.offsetTop - currentPosY + 'px';
+        elem.style.left = elem.offsetLeft - currentPosX + 'px';
       }
 
       /*
@@ -159,29 +191,6 @@
         }
       }
 
-      // when user stop clicking
-      document.addEventListener('mouseup', function () {
-        grid.removeEventListener('mousemove', getGridCoords);
-        document.removeEventListener('mousemove', moveElemOnGrid);
-        document.removeEventListener('mousemove', moveElem);
-      });
-
-      // move the element on the grid
-      function moveElemOnGrid() {
-        elem.style.top = gridCoords.y * (gridRect.height / 10) + 'px';
-        elem.style.left = gridCoords.x * (gridRect.width / 10) + 'px';
-      }
-
-      // move the element outside of the grid
-      function moveElem(e) {
-        // calculate new pointer position
-        currentPosX = initialPosX - e.clientX;
-        currentPosY = initialPosY - e.clientY;
-
-        // set new element position
-        elem.style.top = elem.offsetTop - currentPosY + 'px';
-        elem.style.left = elem.offsetLeft - currentPosX + 'px';
-      }
       */
     </script>
   </body>
