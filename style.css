@@ -1,0 +1,68 @@
+:root {
+  --grid-size: 400px;
+  --square-size: calc(var(--grid-size) / 10);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 20px;
+}
+
+.container {
+  width: 500px;
+  height: 300px;
+  background-color: aliceblue;
+  position: relative;
+  overflow: hidden;
+}
+
+#elem {
+  width: 50px;
+  height: 50px;
+  background-color: blue;
+
+  position: absolute;
+  cursor: move;
+}
+
+#grid {
+  width: var(--grid-size);
+  height: var(--grid-size);
+  border: solid 1px black;
+
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+
+  position: relative;
+}
+
+.square {
+  width: var(--square-size);
+  height: var(--square-size);
+  border: solid 1px black;
+}
+
+#item {
+  position: absolute;
+  width: var(--square-size);
+  height: var(--square-size);
+  background-color: brown;
+  border: solid 1px black;
+
+  cursor: move;
+}
+
+#shot {
+  position: absolute;
+  height: 100%;
+  background-color: orange;
+  border: solid 1px black;
+
+  grid-column-start: 5;
+  grid-row-start: 5;
+  grid-row-end: span 5;
+}
